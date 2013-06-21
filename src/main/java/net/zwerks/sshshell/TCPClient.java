@@ -1,16 +1,17 @@
 package net.zwerks.sshshell;
 
 import java.io.*;
-import java.io.ByteArrayOutputStream;
 import java.net.*;
 
 public class TCPClient {
 
-    private  final String serverIP = "127.0.0.1";
-    private  final int serverPort = 3248;
-    private  final String fileOutput = "C:\\testout.pdf";
+    
 
     public static void main(String args[]) {
+    	String serverIP = "127.0.0.1";
+        int serverPort = 3248;
+        String fileOutput = System.getProperty("user.dir")+"\\testout.txt";
+    	
         byte[] aByte = new byte[1];
         int bytesRead;
 

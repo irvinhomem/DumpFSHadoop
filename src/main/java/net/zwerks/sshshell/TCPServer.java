@@ -5,9 +5,10 @@ import java.net.*;
 
 public class TCPServer {
 
-    private final String fileToSend = "C:\\test1.pdf";
+    
 
     public static void main(String args[]) {
+    	String fileToSend = System.getProperty("user.dir")+"\\test1.txt";
 
         while (true) {
             ServerSocket welcomeSocket = null;

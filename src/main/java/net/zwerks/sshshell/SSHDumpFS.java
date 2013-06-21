@@ -33,6 +33,8 @@ public class SSHDumpFS {
 		
 		myFSDumper.doPortForwardingL(54137, "127.0.0.1", 57314);
 		
+		//myFSDumper.StartLocalNetCat(54137);
+		
 		//String CommandToExecute = "set|grep SSH";
 		String CommandToExecute = "dd if=/dev/mtdblock5 | gzip | nc -l -p 57314 -w 10";
 				
@@ -43,13 +45,14 @@ public class SSHDumpFS {
 		//myDD2Netcat.send();
 		
 		System.out.println("Sending ...");
-		//myFSDumper.StartLocalNetCat(54137);
+		
+		myFSDumper.StartLocalNetCat(54137);
 		
 		//String stopCommand = "killall nc";
 		//myFSDumper.StopRemoteNetcat(stopCommand);
 		
 		
-		System.out.println("Still Sending ...");
+		//System.out.println("Still Sending ...");
 	}
 	
 	public void InitiateConnection(String username, String secret, String hostname){
@@ -97,11 +100,11 @@ public class SSHDumpFS {
 		
 	}
 	
-	
 	public void StartLocalNetCat(int listenPort){
-		DumpReceiver dumpRcvr = new DumpReceiver(System.getProperty("user.dir")+"\\", "myDumpFile.ida", listenPort);
-		Thread t = new Thread(dumpRcvr);
-		t.start();
+			DumpReceiver dumpRcvr = new DumpReceiver(System.getProperty("user.dir")+"\\", "myDumpFile.ida", listenPort);
+			Thread t = new Thread(dumpRcvr);
+			t.start();		
+		
 		//dumpRcvr.listen(listenPort);
 		
 	}

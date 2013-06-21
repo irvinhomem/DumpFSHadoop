@@ -22,12 +22,16 @@ public class DumpReceiver implements Runnable {
 		this.OutputPath = FileDumpDir;
 		this.outputFilename = DumpFileName;
 		this.serverPort = listenPort;
+		this.connectedSock = null;
+		this.inStream = null;
 		
+		System.out.println("**********************************************************");
+		System.out.println("Dumper Activated.");
 		System.out.println("File output path: "+ this.OutputPath+this.outputFilename);
+		System.out.println("**********************************************************");
 		
 		InputStream is = null;
 		//this.serverPort = listenPort;
-		System.out.println("Connecting ...");
 		
 	}
 
@@ -35,15 +39,18 @@ public class DumpReceiver implements Runnable {
 	public void run() {
 
 		//while(true){
-			
+		System.out.println("Attempting to receive file ...");
 			if(this.connectedSock == null){
 				try{
-					//serverSock = new ServerSocket(this.serverPort);
-					//connectedSock = serverSock.accept();
+					//ServerSocket servSock = new ServerSocket(serverPort);
+					//Socket socket = servSock.accept();
+					//this.serverSock = new ServerSocket(this.serverPort);
+					//this.connectedSock = serverSock.accept();
 					
-					Socket connectedSock = new Socket("127.0.0.1", this.serverPort);
+					Socket myConnectedSock = new Socket("127.0.0.1", this.serverPort);
 					
-					this.inStream = connectedSock.getInputStream();
+					this.inStream = myConnectedSock.getInputStream();
+					this.connectedSock = myConnectedSock;
 					
 				} catch(IOException ioex){
 					System.out.println("Caught I/O Exception while connecting: "+ioex);
@@ -62,7 +69,8 @@ public class DumpReceiver implements Runnable {
             BufferedOutputStream bos = null;
 	        
 	        if (this.inStream != null) {
-	        	System.out.println("Receiving file from: "+ this.connectedSock.getInetAddress());
+	        	System.out.println("Connected on: "+ this.connectedSock.getLocalAddress()+":"+this.connectedSock.getLocalPort());
+	        	System.out.println("Receiving file from: "+ this.connectedSock.getInetAddress()+":"+this.connectedSock.getPort());
 	            
 	            try {
 	                fos = new FileOutputStream( this.OutputPath + this.outputFilename );
