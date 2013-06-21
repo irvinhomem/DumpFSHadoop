@@ -34,12 +34,14 @@ public class DumpReceiver implements Runnable {
 	//@Override
 	public void run() {
 
-		while(true){
+		//while(true){
 			
-			if(serverSock == null){
+			if(this.connectedSock == null){
 				try{
-					serverSock = new ServerSocket(this.serverPort);
-					connectedSock = serverSock.accept();
+					//serverSock = new ServerSocket(this.serverPort);
+					//connectedSock = serverSock.accept();
+					
+					Socket connectedSock = new Socket("127.0.0.1", this.serverPort);
 					
 					this.inStream = connectedSock.getInputStream();
 					
@@ -81,7 +83,7 @@ public class DumpReceiver implements Runnable {
 	            	System.out.println("Caught I/O Exception transferring file: "+ex);
 	            }
 	        }
-		}
+		//}
 		
 	}
 	
