@@ -6,8 +6,10 @@ import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.Session;
 
-public class RemoteDD2Netcat  { // implements Runnable why?
-
+public class RemoteDD2Netcat implements Runnable{ // implements Runnable why?
+	/*Implements runnable, so that as soon as the RemoteDDNetcat command has 
+	 * been sent for execution, the DumpReceiver can be started
+	 */
 	private Session currSession;
 	private String command;
 	
@@ -16,7 +18,7 @@ public class RemoteDD2Netcat  { // implements Runnable why?
 		this.command = theCommand;
 	}
 
-	public void send() { //send
+	public void run() { //send
 		try{
 			//Session currSession = this.getOpenSession();
 			Channel channel = this.currSession.openChannel("exec");

@@ -35,20 +35,21 @@ public class SSHDumpFS {
 		
 		//String CommandToExecute = "set|grep SSH";
 		String CommandToExecute = "dd if=/dev/mtdblock5 | gzip | nc -l -p 57314 -w 10";
-		
-		
-		
+				
 		//myFSDumper.StartRemoteDD2Netcat(CommandToExecute);
 		RemoteDD2Netcat myDD2Netcat = new RemoteDD2Netcat(CommandToExecute, myFSDumper.getOpenSession());
-		//Thread dd2netcatThread = new Thread(myDD2Netcat);
-		//dd2netcatThread.start();
-		myDD2Netcat.send();
+		Thread dd2netcatThread = new Thread(myDD2Netcat);
+		dd2netcatThread.start();
+		//myDD2Netcat.send();
 		
-		myFSDumper.StartLocalNetCat(54137);
+		System.out.println("Sending ...");
+		//myFSDumper.StartLocalNetCat(54137);
 		
 		//String stopCommand = "killall nc";
 		//myFSDumper.StopRemoteNetcat(stopCommand);
-
+		
+		
+		System.out.println("Still Sending ...");
 	}
 	
 	public void InitiateConnection(String username, String secret, String hostname){
