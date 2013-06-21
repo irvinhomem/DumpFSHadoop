@@ -34,7 +34,9 @@ public class SSHDumpFS {
 		myFSDumper.doPortForwardingL(54137, "127.0.0.1", 57314);
 		
 		//String CommandToExecute = "set|grep SSH";
-		String CommandToExecute = "dd if=/dev/mtdblock5 | gzip | nc -l -p 57314 -w 30";
+		String CommandToExecute = "dd if=/dev/mtdblock5 | gzip | nc -l -p 57314 -w 10";
+		
+		
 		
 		//myFSDumper.StartRemoteDD2Netcat(CommandToExecute);
 		RemoteDD2Netcat myDD2Netcat = new RemoteDD2Netcat(CommandToExecute, myFSDumper.getOpenSession());
