@@ -45,6 +45,7 @@ public class DumpReceiver implements Runnable {
 					
 				} catch(IOException ioex){
 					System.out.println("Caught I/O Exception while connecting: "+ioex);
+					ioex.printStackTrace();
 					//wait(0);
 					System.exit(0);
 				}

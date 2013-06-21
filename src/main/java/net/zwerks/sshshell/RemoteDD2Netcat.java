@@ -6,7 +6,7 @@ import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.Session;
 
-public class RemoteDD2Netcat  { //implements Runnable why?
+public class RemoteDD2Netcat  { // implements Runnable why?
 
 	private Session currSession;
 	private String command;
@@ -16,7 +16,7 @@ public class RemoteDD2Netcat  { //implements Runnable why?
 		this.command = theCommand;
 	}
 
-	public void send() {
+	public void send() { //send
 		try{
 			//Session currSession = this.getOpenSession();
 			Channel channel = this.currSession.openChannel("exec");
