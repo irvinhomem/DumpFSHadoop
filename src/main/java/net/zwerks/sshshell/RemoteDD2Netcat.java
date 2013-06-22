@@ -16,6 +16,10 @@ public class RemoteDD2Netcat implements Runnable{ // implements Runnable why?
 	public RemoteDD2Netcat(String theCommand, Session openSession) {
 		this.currSession = openSession;
 		this.command = theCommand;
+		
+		System.out.println("---------------------------------------");
+		System.out.println("Starting Netcat on remote ...");
+		System.out.println("---------------------------------------");
 	}
 
 	public void run() { //send
@@ -29,7 +33,7 @@ public class RemoteDD2Netcat implements Runnable{ // implements Runnable why?
 			((ChannelExec)channel).setErrStream(System.err);
 
 			InputStream in=channel.getInputStream();
-
+			
 			channel.connect();
 
 			byte[] tmp=new byte[1024];

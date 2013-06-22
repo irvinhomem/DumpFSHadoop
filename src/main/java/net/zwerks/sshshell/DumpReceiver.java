@@ -15,7 +15,7 @@ public class DumpReceiver implements Runnable {
     private int serverPort;
     private String OutputPath;
     private String outputFilename;
-    private InputStream inStream;
+    //private InputStream inStream;
 
 	public DumpReceiver(String FileDumpDir, String DumpFileName, int listenPort){
 		// TODO Auto-generated constructor stub
@@ -23,14 +23,14 @@ public class DumpReceiver implements Runnable {
 		this.outputFilename = DumpFileName;
 		this.serverPort = listenPort;
 		this.connectedSock = null;
-		this.inStream = null;
+		//this.inStream = null;
 		
 		System.out.println("**********************************************************");
 		System.out.println("Dumper Activated.");
 		System.out.println("File output path: "+ this.OutputPath+this.outputFilename);
 		System.out.println("**********************************************************");
 		
-		InputStream is = null;
+		//InputStream is = null;
 		//this.serverPort = listenPort;
 		
 	}
@@ -38,6 +38,7 @@ public class DumpReceiver implements Runnable {
 	//@Override
 	public void run() {
 
+		InputStream inStream = null;
 		//while(true){
 		System.out.println("Attempting to receive file ...");
 			if(this.connectedSock == null){
@@ -49,7 +50,8 @@ public class DumpReceiver implements Runnable {
 					
 					Socket myConnectedSock = new Socket("127.0.0.1", this.serverPort);
 					
-					this.inStream = myConnectedSock.getInputStream();
+					inStream = myConnectedSock.getInputStream();
+					
 					this.connectedSock = myConnectedSock;
 					
 				} catch(IOException ioex){
@@ -65,22 +67,30 @@ public class DumpReceiver implements Runnable {
 	        int bytesRead;
 			
 	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	        FileOutputStream fos = null;
-            BufferedOutputStream bos = null;
 	        
-	        if (this.inStream != null) {
+	        
+	        if (inStream != null) {
+	        	FileOutputStream fos = null;
+	            BufferedOutputStream bos = null;
+	        	
 	        	System.out.println("Connected on: "+ this.connectedSock.getLocalAddress()+":"+this.connectedSock.getLocalPort());
 	        	System.out.println("Receiving file from: "+ this.connectedSock.getInetAddress()+":"+this.connectedSock.getPort());
 	            
 	            try {
 	                fos = new FileOutputStream( this.OutputPath + this.outputFilename );
-	                System.out.println("Writing file to:" + this.OutputPath + this.outputFilename);
+	                System.out.println("Ready to write file to: " + this.OutputPath + this.outputFilename);
+	                
+	                //fos.
+	                //bos.
+	                
 	                bos = new BufferedOutputStream(fos);
-	                bytesRead = this.inStream.read(aByte, 0, aByte.length);
+	                System.out.println("Bytes available: " + inStream.available());
+	                
+	                bytesRead = inStream.read(aByte, 0, aByte.length);
 
 	                do {
 	                        baos.write(aByte);
-	                        bytesRead = this.inStream.read(aByte);
+	                        bytesRead = inStream.read(aByte);
 	                } while (bytesRead != -1);
 
 	                bos.write(baos.toByteArray());

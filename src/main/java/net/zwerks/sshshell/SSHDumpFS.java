@@ -34,9 +34,14 @@ public class SSHDumpFS {
 		myFSDumper.doPortForwardingL(54137, "127.0.0.1", 57314);
 		
 		//myFSDumper.StartLocalNetCat(54137);
+	
+		
+		
 		
 		//String CommandToExecute = "set|grep SSH";
-		String CommandToExecute = "dd if=/dev/mtdblock5 | gzip | nc -l -p 57314 -w 10";
+		//---->//
+		//String CommandToExecute = "dd if=/dev/mtdblock5 | gzip | nc -l -p 57314 -w 30";
+		String CommandToExecute = "echo '123zxc' | gzip | nc -l -p 57314 -w 30";
 				
 		//myFSDumper.StartRemoteDD2Netcat(CommandToExecute);
 		RemoteDD2Netcat myDD2Netcat = new RemoteDD2Netcat(CommandToExecute, myFSDumper.getOpenSession());
@@ -44,7 +49,6 @@ public class SSHDumpFS {
 		dd2netcatThread.start();
 		//myDD2Netcat.send();
 		
-		System.out.println("Sending ...");
 		
 		myFSDumper.StartLocalNetCat(54137);
 		
@@ -97,14 +101,19 @@ public class SSHDumpFS {
 		catch(JSchException ex){
 			System.out.println("Caught Exception while doing Local Port Forwarding: \n" + ex);
 		}
-		
 	}
 	
 	public void StartLocalNetCat(int listenPort){
-			DumpReceiver dumpRcvr = new DumpReceiver(System.getProperty("user.dir")+"\\", "myDumpFile.ida", listenPort);
-			Thread t = new Thread(dumpRcvr);
-			t.start();		
+				
+		DumpReceiver dumpRcvr = new DumpReceiver(System.getProperty("user.dir")+"\\", "myDumpFile.ida", listenPort);
+		Thread t = new Thread(dumpRcvr);
+		try{
+			t.sleep(1000);
+		} catch(){
+			
+		}
 		
+		t.start();
 		//dumpRcvr.listen(listenPort);
 		
 	}
