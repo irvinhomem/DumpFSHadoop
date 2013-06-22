@@ -96,7 +96,11 @@ public class DumpReceiver implements Runnable {
 	                bos.write(baos.toByteArray());
 	                bos.flush();
 	                bos.close();
+	                
+	                //fos.
+	                fos.close();
 	                connectedSock.close();
+	                
 	            } catch (IOException ex) {
 	            	System.out.println("Caught I/O Exception transferring file: "+ex);
 	            }

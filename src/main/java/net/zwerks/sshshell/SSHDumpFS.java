@@ -40,8 +40,8 @@ public class SSHDumpFS {
 		
 		//String CommandToExecute = "set|grep SSH";
 		//---->//
-		//String CommandToExecute = "dd if=/dev/mtdblock5 | gzip | nc -l -p 57314 -w 30";
-		String CommandToExecute = "echo '123zxc' | gzip | nc -l -p 57314 -w 30";
+		String CommandToExecute = "dd if=/dev/mtdblock5 | gzip | nc -l -p 57314 -w 10";
+		//String CommandToExecute = "echo '1234567zxckhgjgh' | gzip | nc -l -p 57314 -w 10";
 				
 		//myFSDumper.StartRemoteDD2Netcat(CommandToExecute);
 		RemoteDD2Netcat myDD2Netcat = new RemoteDD2Netcat(CommandToExecute, myFSDumper.getOpenSession());
@@ -105,12 +105,12 @@ public class SSHDumpFS {
 	
 	public void StartLocalNetCat(int listenPort){
 				
-		DumpReceiver dumpRcvr = new DumpReceiver(System.getProperty("user.dir")+"\\", "myDumpFile.ida", listenPort);
+		DumpReceiver dumpRcvr = new DumpReceiver(System.getProperty("user.dir")+"\\", "myDumpFile.ida.gz", listenPort);
 		Thread t = new Thread(dumpRcvr);
 		try{
 			t.sleep(1000);
-		} catch(){
-			
+		} catch(InterruptedException iex){
+			System.out.println("Thread exception with Dumper: "+iex);
 		}
 		
 		t.start();
