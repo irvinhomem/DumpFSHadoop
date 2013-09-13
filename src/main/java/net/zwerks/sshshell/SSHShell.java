@@ -20,8 +20,12 @@ public class SSHShell{
     try{
       JSch jsch=new JSch();
  
-      //jsch.setKnownHosts("/home/foo/.ssh/known_hosts");
-      jsch.setKnownHosts(System.getProperty("user.dir")+"\\known_hosts.txt");
+      if (System.getProperty("os.name").toLowerCase() == "linux"){
+    	  //jsch.setKnownHosts("/home/foo/.ssh/known_hosts");  
+    	  jsch.setKnownHosts(System.getProperty("user.dir")+"/"+"known_hosts.txt");
+      }else if (System.getProperty("os.name").toLowerCase() == "windows"){
+    	  jsch.setKnownHosts(System.getProperty("user.dir")+"\\"+"known_hosts.txt");
+      }
  
       String host=null;
       
