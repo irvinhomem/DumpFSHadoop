@@ -21,9 +21,11 @@ public class SSHShell{
       JSch jsch=new JSch();
  
       if (System.getProperty("os.name").toLowerCase().equals("linux") ){
+    	  //For LINUX based testing
     	  //jsch.setKnownHosts("/home/foo/.ssh/known_hosts");  
     	  jsch.setKnownHosts(System.getProperty("user.dir")+"/"+"known_hosts.txt");
       }else if (System.getProperty("os.name").toLowerCase().startsWith("win")){
+    	  //For WINDOWS based testing
     	  jsch.setKnownHosts(System.getProperty("user.dir")+"\\"+"known_hosts.txt");
       }
  

@@ -40,8 +40,6 @@ public class SSHDumpFS {
 		myFSDumper.doPortForwardingL(54137, "127.0.0.1", 57314);
 		
 		//myFSDumper.StartLocalNetCat(54137);
-	
-		
 		
 		
 		//String CommandToExecute = "set|grep SSH";

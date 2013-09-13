@@ -20,6 +20,10 @@ public class RemoteDD2Netcat implements Runnable{ // implements Runnable why?
 		System.out.println("---------------------------------------");
 		System.out.println("Starting Netcat on remote ...");
 		System.out.println("---------------------------------------");
+		
+		System.out.println("---------------------------------------");
+		System.out.println("Beginning Acquisition and Compression ...");
+		System.out.println("---------------------------------------");
 	}
 
 	public void run() { //send
