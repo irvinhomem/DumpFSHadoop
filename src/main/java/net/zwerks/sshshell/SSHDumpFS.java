@@ -174,7 +174,7 @@ public class SSHDumpFS {
 		
 		if (myCurrOS.equals("linux")){
 			pathFormat = "/";
-		}else if(myCurrOS.equals("windows")){
+		}else if(myCurrOS.startsWith("win")){
 			pathFormat = "\\";
 		}
 		
