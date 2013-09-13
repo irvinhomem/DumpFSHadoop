@@ -23,7 +23,8 @@ public class SSHDumpFS {
 		// TODO Auto-generated constructor stub
 		
 		//Print out OS that CBB is running from
-		System.out.println("CBB FileSystem Dumper running on: " + this.getCurrOSPathFormat().toUpperCase() + "...");
+		System.out.println("------------------------------------");
+		System.out.println("CBB FileSystem Dumper running on: " + System.getProperty("os.name").toUpperCase() + "...");
 	}
 
 	/**
@@ -70,7 +71,10 @@ public class SSHDumpFS {
 			JSch jsch=new JSch();
 		    
 			//Load known_hosts file 
-			jsch.setKnownHosts(System.getProperty("user.dir") + this.getCurrOSPathFormat() + "known_hosts.txt");
+			String KnownHostsFilePath = System.getProperty("user.dir") + this.getCurrOSPathFormat() + "known_hosts.txt";
+			System.out.println(KnownHostsFilePath);
+			System.out.println("------------------------------------");
+			jsch.setKnownHosts(KnownHostsFilePath);
 			
 			//Get the username and hostname of the machine/host to dump
 			this.Host2Dump = hostname;
@@ -168,11 +172,13 @@ public class SSHDumpFS {
 		String myCurrOS =  System.getProperty("os.name").toLowerCase();
 		String pathFormat = "";
 		
-		if (myCurrOS == "linux"){
+		if (myCurrOS.equals("linux")){
 			pathFormat = "/";
-		}else if(myCurrOS == "windows"){
+		}else if(myCurrOS.equals("windows")){
 			pathFormat = "\\";
 		}
+		
+		System.out.println(pathFormat);
 		
 		return pathFormat;
 	}
