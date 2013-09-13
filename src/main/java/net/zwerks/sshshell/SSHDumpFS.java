@@ -21,6 +21,9 @@ public class SSHDumpFS {
 	
 	public SSHDumpFS() {
 		// TODO Auto-generated constructor stub
+		
+		//Print out OS that CBB is running from
+		System.out.println("CBB FileSystem Dumper running on: " + this.getCurrOSPathFormat().toUpperCase() + "...");
 	}
 
 	/**
@@ -28,6 +31,8 @@ public class SSHDumpFS {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		
+		//Initialize the FSDumper
 		SSHDumpFS myFSDumper= new SSHDumpFS();
 		myFSDumper.InitiateConnection("root", "", "192.168.1.150");
 		
@@ -65,7 +70,7 @@ public class SSHDumpFS {
 			JSch jsch=new JSch();
 		    
 			//Load known_hosts file 
-			jsch.setKnownHosts(System.getProperty("user.dir")+"\\known_hosts.txt");
+			jsch.setKnownHosts(System.getProperty("user.dir") + this.getCurrOSPathFormat() + "known_hosts.txt");
 			
 			//Get the username and hostname of the machine/host to dump
 			this.Host2Dump = hostname;
@@ -105,7 +110,7 @@ public class SSHDumpFS {
 	
 	public void StartLocalNetCat(int listenPort){
 				
-		DumpReceiver dumpRcvr = new DumpReceiver(System.getProperty("user.dir")+"\\", "myDumpFile.ida.gz", listenPort);
+		DumpReceiver dumpRcvr = new DumpReceiver(System.getProperty("user.dir") + this.getCurrOSPathFormat(), "myDumpFile.ida.gz", listenPort);
 		Thread t = new Thread(dumpRcvr);
 		try{
 			t.sleep(1000);
@@ -157,6 +162,19 @@ public class SSHDumpFS {
 	
 	public Session getOpenSession(){
 		return this.openSession;
+	}
+	
+	public String getCurrOSPathFormat(){
+		String myCurrOS =  System.getProperty("os.name").toLowerCase();
+		String pathFormat = "";
+		
+		if (myCurrOS == "linux"){
+			pathFormat = "/";
+		}else if(myCurrOS == "windows"){
+			pathFormat = "\\";
+		}
+		
+		return pathFormat;
 	}
 }
 
