@@ -30,7 +30,7 @@ public class DumpReceiver implements Runnable {
 		// TODO Auto-generated constructor stub
 		this.OutputPath = FileDumpDir;				//Directory where incoming file is to be dumped
 		this.outputFilename = DumpFileName;			//File name of incoming dump file
-		this.HDFSOutputPath = "/user/hadoop_user/";					//Hadoop HDFS Chosen Dump Directory
+		this.HDFSOutputPath = "/user/hadoop_user/IDA_ARCHIVE/";					//Hadoop HDFS Chosen Dump Directory
 		this.serverPort = listenPort;
 		this.connectedSock = null;
 		//this.inStream = null;
@@ -80,8 +80,12 @@ public class DumpReceiver implements Runnable {
 	        
 	        /*For Hadoop HDFS*/
 	        Configuration myHDFSConfig = new Configuration();
+	        
 	        myHDFSConfig.addResource("/HADOOP_HOME/conf/core-site.xml");
 	        myHDFSConfig.addResource("/HADOOP_HOME/conf/hdfs-site.xml");
+	        // Using the full path: "/usr/local/hadoop"
+	        //myHDFSConfig.addResource("/usr/local/hadoop/conf/core-site.xml");
+	        //myHDFSConfig.addResource("/usr/local/hadoop/conf/hdfs-site.xml");
 	        
 	        /*---*/
 	        
@@ -98,9 +102,17 @@ public class DumpReceiver implements Runnable {
 	        	System.out.println("Receiving file from: "+ this.connectedSock.getInetAddress()+":"+this.connectedSock.getPort());
 	            
 	            try {
+	            	System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+	            	System.out.println("+++++++++++++++++++++ Beginning HDFS Transactions ++++++++++++++++++++");
+	            	System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+	            	
 	                /*For Hadoop HDFS Capability*/
 	            	FileSystem hdfs = FileSystem.get(myHDFSConfig);
+	            	
+	            	//For some strange reason "localhost" was not working, so i had to use the machine name
 	            	//hdfs = FileSystem.get(new URI("hdfs://localhost:54310"), myHDFSConfig);
+	            	hdfs = FileSystem.get(new URI("hdfs://cbb-node0:54310"), myHDFSConfig);
+	            	
 	            	//FSDataOutputStream hdfsout = hdfs.create(new Path(this.HDFSOutputPath + this.outputFilename));
 	            	Path theHDFSOuputPath = new Path(this.HDFSOutputPath + this.outputFilename);
 	            	System.out.println("HDFS Path to output to ... " + theHDFSOuputPath.toString());
@@ -108,7 +120,8 @@ public class DumpReceiver implements Runnable {
 	            		System.out.println("HDFS Output Path: " + theHDFSOuputPath.toString() + " EXISTS");
 	            	}
 	            	System.out.println("Current Working Directory is: " + hdfs.getWorkingDirectory());
-	            	System.out.println("Current Home Directory is: " + hdfs.getWorkingDirectory());
+	            	System.out.println("Current Home Directory is: " + hdfs.getHomeDirectory());
+	            	//hdfs.
 	            	
 	            	FSDataOutputStream hdfsout = hdfs.create(theHDFSOuputPath);
 	                ////////hdfsout = new FSDataOutputStream(fos, null);
@@ -174,16 +187,18 @@ public class DumpReceiver implements Runnable {
 	                
 	                //fos.
 	                fos.close();
+	                inStream.close();
+	                
 	                connectedSock.close();
 	                
 	            } catch (IOException ex) {
 	            	System.out.println("Caught I/O Exception transferring file: "+ex);
 					System.out.println("IO Error while getting HDFS URI");
 					ex.printStackTrace();
-				//} catch (URISyntaxException e) {
-				//	// TODO Auto-generated catch block
-				//	System.out.println("Error in HDFS URI Syntax, while getting HDFS URI");
-				//	e.printStackTrace();
+				} catch (URISyntaxException e) {
+					// TODO Auto-generated catch block
+					System.out.println("Error in HDFS URI Syntax, while getting HDFS URI");
+					e.printStackTrace();
 				}
 		}
 		//}
