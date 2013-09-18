@@ -9,6 +9,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
@@ -25,8 +28,9 @@ public class DumpReceiver implements Runnable {
     private String outputFilename;
     private String HDFSOutputPath;
     //private InputStream inStream;
+    private DumpFSStatistics currStats;
 
-	public DumpReceiver(String FileDumpDir, String DumpFileName, int listenPort){
+	public DumpReceiver(String FileDumpDir, String DumpFileName, int listenPort, DumpFSStatistics myStatsCollector){
 		// TODO Auto-generated constructor stub
 		this.OutputPath = FileDumpDir;				//Directory where incoming file is to be dumped
 		this.outputFilename = DumpFileName;			//File name of incoming dump file
@@ -34,6 +38,7 @@ public class DumpReceiver implements Runnable {
 		this.serverPort = listenPort;
 		this.connectedSock = null;
 		//this.inStream = null;
+		this.currStats = myStatsCollector;
 		
 		System.out.println("**********************************************************");
 		System.out.println("Dump Receiver Activated.");
@@ -72,6 +77,8 @@ public class DumpReceiver implements Runnable {
 				}
 			}
 			
+			long startCopyTime = System.currentTimeMillis();
+			this.currStats.setFileTransStartTime(startCopyTime);
 			
 			byte[] aByte = new byte[1];
 	        int bytesRead;
@@ -175,7 +182,7 @@ public class DumpReceiver implements Runnable {
 	                
 	                bos.write(baos.toByteArray());
 	                
-	                System.out.println("Transfer complete");
+	                //System.out.println("Transfer complete");
 	                
 	                bos.flush();
 	                bos.close();
@@ -188,6 +195,8 @@ public class DumpReceiver implements Runnable {
 	                //fos.
 	                fos.close();
 	                inStream.close();
+	                
+	                System.out.println("Transfer complete");
 	                
 	                connectedSock.close();
 	                
@@ -202,7 +211,35 @@ public class DumpReceiver implements Runnable {
 				}
 		}
 		//}
+	        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        	System.out.println("+++++++++++++++++++++++++++ RUN STATISTICS +++++++++++++++++++++++++++");
+        	System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+	        
+	        //Stuff to output the time taken for the File Transfer transaction to complete
+	        long finishCopyTime = System.currentTimeMillis();
+	        this.currStats.setFileTransEndTime(finishCopyTime);
+	        
+	        //long copyTime = finishCopyTime-startCopyTime;
+	        //System.out.println("File transfer time (in 'ms'): " + this.currStats.getFileTransTime() + "ms");
+	        
+	        //Formatting milliseconds to HH:mm:ss:SSS
+	        //SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+	        
+	        //String strDate = sdfDate.format(copyTime.);
+	        
+	        //hh:mm:ss:SSS
+	        //String formattedTime = String.format("%02d:%02d:%02d:%02d", 
+	        //    TimeUnit.MILLISECONDS.toHours(copyTime),
+	        //    TimeUnit.MILLISECONDS.toMinutes(copyTime) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(copyTime)),
+	        //    TimeUnit.MILLISECONDS.toSeconds(copyTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(copyTime)),
+	        //    TimeUnit.MILLISECONDS.toMillis(copyTime) - TimeUnit.SECONDS.toMillis(TimeUnit.MILLISECONDS.toSeconds(copyTime)));
+	            
+	        System.out.println("File transfer time: " + this.currStats.convertLongToStringTime(this.currStats.getFileTransTime()));
 		
+	        long progEndTime = System.currentTimeMillis();
+	        this.currStats.setAppEndTime(progEndTime);
+	        
+	        System.out.println("Total Application run time: " + this.currStats.convertLongToStringTime(this.currStats.getAppRunTime()));
 	}
 	
 	public void listen(){

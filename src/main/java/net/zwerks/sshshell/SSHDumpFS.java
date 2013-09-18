@@ -18,6 +18,7 @@ public class SSHDumpFS {
 	private String UserOnHost2Dump;
 	private String Host2Dump;
 	private Session openSession;
+	//private DumpFSStatistics myStatistics;
 	
 	public SSHDumpFS() {
 		// TODO Auto-generated constructor stub
@@ -32,6 +33,14 @@ public class SSHDumpFS {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		//For Benchmarking the time
+		long progStartTime = System.currentTimeMillis();
+		DumpFSStatistics myStatistics = new DumpFSStatistics();
+		myStatistics.setAppStartTime(progStartTime);
+		
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		System.out.println("~~~~~~~~~~~~~~~ Application Timer Started ... ("+ progStartTime +")~~~~~~~~~~~~~~");
+		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		
 		//Initialize the FSDumper
 		SSHDumpFS myFSDumper= new SSHDumpFS();
@@ -54,13 +63,16 @@ public class SSHDumpFS {
 		//myDD2Netcat.send();
 		
 		
-		myFSDumper.StartLocalNetCat(54137);
+		myFSDumper.StartLocalNetCat(54137, myStatistics);
 		
 		//String stopCommand = "killall nc";
 		//myFSDumper.StopRemoteNetcat(stopCommand);
 		
-		
 		//System.out.println("Still Sending ...");
+		
+		//long progFinishTime = System.currentTimeMillis();
+		//System.out.println("Total Application Run time: " + (progFinishTime - progStartTime));
+		//System.out.println("Total Application Run time: " + (progFinishTime - progStartTime));
 	}
 	
 	public void InitiateConnection(String username, String secret, String hostname){
@@ -110,9 +122,9 @@ public class SSHDumpFS {
 		}
 	}
 	
-	public void StartLocalNetCat(int listenPort){
+	public void StartLocalNetCat(int listenPort, DumpFSStatistics statsCollector){
 				
-		DumpReceiver dumpRcvr = new DumpReceiver(System.getProperty("user.dir") + this.getCurrOSPathFormat(), "myDumpFile.ida.gz", listenPort);
+		DumpReceiver dumpRcvr = new DumpReceiver(System.getProperty("user.dir") + this.getCurrOSPathFormat(), "myDumpFile.ida.gz", listenPort, statsCollector);
 		Thread t = new Thread(dumpRcvr);
 		try{
 			t.sleep(1000);

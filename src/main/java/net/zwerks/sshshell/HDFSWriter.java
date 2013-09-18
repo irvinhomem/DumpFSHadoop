@@ -9,6 +9,7 @@ import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.util.Progressable;
 
 
+//NOT USED CURRENTLY
 public class HDFSWriter {
 
 	private String FileOutputPath;
