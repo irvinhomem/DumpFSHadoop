@@ -50,7 +50,6 @@ public class SSHDumpFS {
 		
 		//myFSDumper.StartLocalNetCat(54137);
 		
-		
 		//String CommandToExecute = "set|grep SSH";
 		//---->//
 		String CommandToExecute = "dd if=/dev/mtdblock5 | gzip | nc -l -p 57314 -w 10";
@@ -61,18 +60,11 @@ public class SSHDumpFS {
 		Thread dd2netcatThread = new Thread(myDD2Netcat);
 		dd2netcatThread.start();
 		//myDD2Netcat.send();
-		
-		
+				
 		myFSDumper.StartLocalNetCat(54137, myStatistics);
 		
 		//String stopCommand = "killall nc";
 		//myFSDumper.StopRemoteNetcat(stopCommand);
-		
-		//System.out.println("Still Sending ...");
-		
-		//long progFinishTime = System.currentTimeMillis();
-		//System.out.println("Total Application Run time: " + (progFinishTime - progStartTime));
-		//System.out.println("Total Application Run time: " + (progFinishTime - progStartTime));
 	}
 	
 	public void InitiateConnection(String username, String secret, String hostname){

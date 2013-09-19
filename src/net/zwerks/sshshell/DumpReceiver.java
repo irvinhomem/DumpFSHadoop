@@ -27,12 +27,11 @@ public class DumpReceiver implements Runnable {
     private String OutputPath;
     private String outputFilename;
     private String HDFSOutputPath;
-    //private InputStream inStream;
     private DumpFSStatistics currStats;
 
 	public DumpReceiver(String FileDumpDir, String DumpFileName, int listenPort, DumpFSStatistics myStatsCollector){
 		// TODO Auto-generated constructor stub
-		this.OutputPath = FileDumpDir;				//Directory where incoming file is to be dumped
+		//this.OutputPath = FileDumpDir;				//Directory where incoming file is to be dumped
 		this.outputFilename = DumpFileName;			//File name of incoming dump file
 		this.HDFSOutputPath = "/user/hadoop_user/IDA_ARCHIVE/";					//Hadoop HDFS Chosen Dump Directory
 		this.serverPort = listenPort;
@@ -42,12 +41,8 @@ public class DumpReceiver implements Runnable {
 		
 		System.out.println("**********************************************************");
 		System.out.println("Dump Receiver Activated.");
-		System.out.println("File output path: "+ this.OutputPath+this.outputFilename);
+		System.out.println("File output path: "+ this.HDFSOutputPath+this.outputFilename);
 		System.out.println("**********************************************************");
-		
-		//InputStream is = null;
-		//this.serverPort = listenPort;
-		
 	}
 
 	//@Override
@@ -58,10 +53,6 @@ public class DumpReceiver implements Runnable {
 		System.out.println("Attempting to receive compressed file ...");
 			if(this.connectedSock == null){
 				try{
-					//ServerSocket servSock = new ServerSocket(serverPort);
-					//Socket socket = servSock.accept();
-					//this.serverSock = new ServerSocket(this.serverPort);
-					//this.connectedSock = serverSock.accept();
 					
 					Socket myConnectedSock = new Socket("127.0.0.1", this.serverPort);
 					
@@ -97,10 +88,7 @@ public class DumpReceiver implements Runnable {
 	        /*---*/
 	        
 	        
-	        if (inStream != null) {
-	        	FileOutputStream fos = null;
-	            BufferedOutputStream bos = null;
-	            
+	        if (inStream != null) {            
 	            /*For Hadoop HDFS*/
 	            //FSDataOutputStream hdfsout = null; 
 	            /*---*/
@@ -134,17 +122,11 @@ public class DumpReceiver implements Runnable {
 	                ////////hdfsout = new FSDataOutputStream(fos, null);
 	                /*---*/
 	            	
-	                fos = new FileOutputStream( this.OutputPath + this.outputFilename );
 	                System.out.println("------------------------------------------------");
-	                System.out.println("Beginning File-write to disk ...");
+	                System.out.println("Beginning File-write to HDFS ...");
 	                System.out.println("------------------------------------------------");
-	                System.out.println("Path to write file to: " + this.OutputPath + this.outputFilename);
+	                System.out.println("Path to write file to: " + this.HDFSOutputPath + this.outputFilename);
 	                
-	                //fos.
-	                //bos.
-	                
-	                bos = new BufferedOutputStream(fos);
-
 	                //System.out.println("Preparing to write");
 	                
 	                bytesRead = inStream.read(aByte, 0, aByte.length);
@@ -166,9 +148,7 @@ public class DumpReceiver implements Runnable {
 	                        
 	                        //Some sort of feedback that stuff is happening
 	                        byteCounter++;
-	                        //stepCounter = (int)byteCounter/1000;					//Truncates
-	                        //stepCounterRound = (int)Math.round(byteCounter/1000);	//Rounds up or down >>> Difference at the "Step" points == 1
-	                        //At every instance of divisibility print a "dot" i.e. print a dot for every MB approximately
+
 	                        if(byteCounter % 1000000 == 0){		
 	                        	System.out.print(".");
 	                        	if ((byteCounter/1000000) % 2 == 0){
@@ -178,22 +158,12 @@ public class DumpReceiver implements Runnable {
 	                        }
 	                        
 	                } while (bytesRead != -1);
-	                //System.out.println("\n");
-	                
-	                bos.write(baos.toByteArray());
-	                
-	                //System.out.println("Transfer complete");
-	                
-	                bos.flush();
-	                bos.close();
 	                
 	                /*For Hadoop HDFS*/
 	                hdfsout.close();
 	                hdfs.close();
 	                /*---*/
 	                
-	                //fos.
-	                fos.close();
 	                inStream.close();
 	                
 	                System.out.println("Transfer complete");
@@ -218,22 +188,7 @@ public class DumpReceiver implements Runnable {
 	        //Stuff to output the time taken for the File Transfer transaction to complete
 	        long finishCopyTime = System.currentTimeMillis();
 	        this.currStats.setFileTransEndTime(finishCopyTime);
-	        
-	        //long copyTime = finishCopyTime-startCopyTime;
-	        //System.out.println("File transfer time (in 'ms'): " + this.currStats.getFileTransTime() + "ms");
-	        
-	        //Formatting milliseconds to HH:mm:ss:SSS
-	        //SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-	        
-	        //String strDate = sdfDate.format(copyTime.);
-	        
-	        //hh:mm:ss:SSS
-	        //String formattedTime = String.format("%02d:%02d:%02d:%02d", 
-	        //    TimeUnit.MILLISECONDS.toHours(copyTime),
-	        //    TimeUnit.MILLISECONDS.toMinutes(copyTime) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(copyTime)),
-	        //    TimeUnit.MILLISECONDS.toSeconds(copyTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(copyTime)),
-	        //    TimeUnit.MILLISECONDS.toMillis(copyTime) - TimeUnit.SECONDS.toMillis(TimeUnit.MILLISECONDS.toSeconds(copyTime)));
-	            
+           
 	        System.out.println("File transfer time: " + this.currStats.convertLongToStringTime(this.currStats.getFileTransTime()));
 		
 	        long progEndTime = System.currentTimeMillis();
