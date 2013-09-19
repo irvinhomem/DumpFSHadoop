@@ -1,61 +1,91 @@
-package net.zwerks.sshshell;
+package net.zwerks.dumpfs;
 
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /**
- * This program will demonstrate the port forwarding like option -L of
- * ssh command; the given port on the local host will be forwarded to
- * the given remote host and port on the remote side.
- *   $ CLASSPATH=.:../build javac PortForwardingL.java
- *   $ CLASSPATH=.:../build java PortForwardingL
- * You will be asked username, hostname, port:host:hostport and passwd. 
- * If everything works fine, you will get the shell prompt.
- * Try the port on localhost.
+ * This program will demonstrate remote exec.
+ *   $ CLASSPATH=.:../build javac Exec.java 
+ *   $ CLASSPATH=.:../build java Exec
+ * You will be asked username, hostname, displayname, passwd and command.
+ * If everything works fine, given command will be invoked 
+ * on the remote side and outputs will be printed out.
  *
  */
 import com.jcraft.jsch.*;
 import java.awt.*;
 import javax.swing.*;
+import java.io.*;
  
-public class PortForwardingL{
+public class SSHExec2{
   public static void main(String[] arg){
- 
-    int lport;
-    String rhost;
-    int rport;
- 
     try{
-      JSch jsch=new JSch();
+      JSch jsch=new JSch();  
  
       String host=null;
       if(arg.length>0){
         host=arg[0];
       }
       else{
-        host=JOptionPane.showInputDialog("Enter username@hostname", System.getProperty("user.name")+"@localhost"); 
+    	  //host=JOptionPane.showInputDialog("Enter username@hostname", System.getProperty("user.name")+"@localhost");
+    	  host=JOptionPane.showInputDialog("Enter username@hostname", "root@192.168.1.150"); 
       }
       String user=host.substring(0, host.indexOf('@'));
       host=host.substring(host.indexOf('@')+1);
  
       Session session=jsch.getSession(user, host, 22);
- 
-      String foo=JOptionPane.showInputDialog("Enter -L port:host:hostport",
-					     "port:host:hostport");
-      lport=Integer.parseInt(foo.substring(0, foo.indexOf(':')));
-      foo=foo.substring(foo.indexOf(':')+1);
-      rhost=foo.substring(0, foo.indexOf(':'));
-      rport=Integer.parseInt(foo.substring(foo.indexOf(':')+1));
+      
+      /*
+      String xhost="127.0.0.1";
+      int xport=0;
+      String display=JOptionPane.showInputDialog("Enter display name", 
+                                                 xhost+":"+xport);
+      xhost=display.substring(0, display.indexOf(':'));
+      xport=Integer.parseInt(display.substring(display.indexOf(':')+1));
+      session.setX11Host(xhost);
+      session.setX11Port(xport+6000);
+      */
  
       // username and password will be given via UserInfo interface.
       UserInfo ui=new MyUserInfo();
       session.setUserInfo(ui);
- 
       session.connect();
  
-      //Channel channel=session.openChannel("shell");
-      //channel.connect();
+      //String command=JOptionPane.showInputDialog("Enter command", "set|grep SSH");
+      String command=JOptionPane.showInputDialog("Enter command", "ls -l /dev/");
  
-      int assinged_port=session.setPortForwardingL(lport, rhost, rport);
-      System.out.println("localhost:"+assinged_port+" -> "+rhost+":"+rport);
+      Channel channel=session.openChannel("exec");
+      ((ChannelExec)channel).setCommand(command);
+ 
+      // X Forwarding
+      // channel.setXForwarding(true);
+ 
+      //channel.setInputStream(System.in);
+      channel.setInputStream(null);
+ 
+      //channel.setOutputStream(System.out);
+ 
+      //FileOutputStream fos=new FileOutputStream("/tmp/stderr");
+      //((ChannelExec)channel).setErrStream(fos);
+      ((ChannelExec)channel).setErrStream(System.err);
+ 
+      InputStream in=channel.getInputStream();
+ 
+      channel.connect();
+ 
+      byte[] tmp=new byte[1024];
+      while(true){
+        while(in.available()>0){
+          int i=in.read(tmp, 0, 1024);
+          if(i<0)break;
+          System.out.print(new String(tmp, 0, i));
+        }
+        if(channel.isClosed()){
+          System.out.println("exit-status: "+channel.getExitStatus());
+          break;
+        }
+        try{Thread.sleep(1000);}catch(Exception ee){}
+      }
+      channel.disconnect();
+      session.disconnect();
     }
     catch(Exception e){
       System.out.println(e);
@@ -83,13 +113,15 @@ public class PortForwardingL{
     public boolean promptPassword(String message){
       Object[] ob={passwordField}; 
       int result=
-	  JOptionPane.showConfirmDialog(null, ob, message,
-					JOptionPane.OK_CANCEL_OPTION);
+        JOptionPane.showConfirmDialog(null, ob, message,
+                                      JOptionPane.OK_CANCEL_OPTION);
       if(result==JOptionPane.OK_OPTION){
-	passwd=passwordField.getText();
-	return true;
+        passwd=passwordField.getText();
+        return true;
       }
-      else{ return false; }
+      else{ 
+        return false; 
+      }
     }
     public void showMessage(String message){
       JOptionPane.showMessageDialog(null, message);

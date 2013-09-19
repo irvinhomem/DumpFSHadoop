@@ -1,10 +1,10 @@
-package net.zwerks.sshshell;
+package net.zwerks.dumpfs;
 
 import java.io.InputStream;
 
 import javax.swing.JOptionPane;
 
-import net.zwerks.sshshell.SSHExec.MyUserInfo;
+import net.zwerks.dumpfs.SSHExec.MyUserInfo;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;

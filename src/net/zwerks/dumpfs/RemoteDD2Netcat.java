@@ -1,4 +1,4 @@
-package net.zwerks.sshshell;
+package net.zwerks.dumpfs;
 
 import java.io.InputStream;
 

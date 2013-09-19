@@ -1,4 +1,4 @@
-package net.zwerks.sshshell;
+package net.zwerks.dumpfs;
 
 /* -*-mode:java; c-basic-offset:2; indent-tabs-mode:nil -*- */
 /**
