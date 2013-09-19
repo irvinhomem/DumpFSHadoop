@@ -13,14 +13,14 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
 
-public class SSHDumpFS {
+public class DumpFSHadoop {
 
 	private String UserOnHost2Dump;
 	private String Host2Dump;
 	private Session openSession;
 	//private DumpFSStatistics myStatistics;
 	
-	public SSHDumpFS() {
+	public DumpFSHadoop() {
 		// TODO Auto-generated constructor stub
 		
 		//Print out OS that CBB is running from
@@ -43,7 +43,7 @@ public class SSHDumpFS {
 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		
 		//Initialize the FSDumper
-		SSHDumpFS myFSDumper= new SSHDumpFS();
+		DumpFSHadoop myFSDumper= new DumpFSHadoop();
 		myFSDumper.InitiateConnection("root", "", "192.168.1.150");
 		
 		myFSDumper.doPortForwardingL(54137, "127.0.0.1", 57314);
