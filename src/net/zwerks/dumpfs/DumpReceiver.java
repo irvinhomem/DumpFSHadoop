@@ -28,6 +28,9 @@ public class DumpReceiver implements Runnable {
     private String outputFilename;
     private String HDFSOutputPath;
     private DumpFSStatistics currStats;
+    private HashCreator myHashGen;
+    
+    private FileSystem hdfs;
 
 	public DumpReceiver(String FileDumpDir, String DumpFileName, int listenPort, DumpFSStatistics myStatsCollector){
 		// TODO Auto-generated constructor stub
@@ -38,6 +41,7 @@ public class DumpReceiver implements Runnable {
 		this.connectedSock = null;
 		//this.inStream = null;
 		this.currStats = myStatsCollector;
+		this.myHashGen = new HashCreator(this.HDFSOutputPath+this.outputFilename);
 		
 		System.out.println("**********************************************************");
 		System.out.println("Dump Receiver Activated.");
@@ -102,23 +106,23 @@ public class DumpReceiver implements Runnable {
 	            	System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 	            	
 	                /*For Hadoop HDFS Capability*/
-	            	FileSystem hdfs = FileSystem.get(myHDFSConfig);
+	            	this.hdfs = FileSystem.get(myHDFSConfig);
 	            	
 	            	//For some strange reason "localhost" was not working, so i had to use the machine name
 	            	//hdfs = FileSystem.get(new URI("hdfs://localhost:54310"), myHDFSConfig);
-	            	hdfs = FileSystem.get(new URI("hdfs://cbb-node0:54310"), myHDFSConfig);
+	            	this.hdfs = FileSystem.get(new URI("hdfs://cbb-node0:54310"), myHDFSConfig);
 	            	
 	            	//FSDataOutputStream hdfsout = hdfs.create(new Path(this.HDFSOutputPath + this.outputFilename));
 	            	Path theHDFSOuputPath = new Path(this.HDFSOutputPath + this.outputFilename);
 	            	System.out.println("HDFS Path to output to ... " + theHDFSOuputPath.toString());
-	            	if(hdfs.exists(theHDFSOuputPath)){
+	            	if(this.hdfs.exists(theHDFSOuputPath)){
 	            		System.out.println("HDFS Output Path: " + theHDFSOuputPath.toString() + " EXISTS");
 	            	}
-	            	System.out.println("Current Working Directory is: " + hdfs.getWorkingDirectory());
-	            	System.out.println("Current Home Directory is: " + hdfs.getHomeDirectory());
+	            	System.out.println("Current Working Directory is: " + this.hdfs.getWorkingDirectory());
+	            	System.out.println("Current Home Directory is: " + this.hdfs.getHomeDirectory());
 	            	//hdfs.
 	            	
-	            	FSDataOutputStream hdfsout = hdfs.create(theHDFSOuputPath);
+	            	FSDataOutputStream hdfsout = this.hdfs.create(theHDFSOuputPath);
 	                ////////hdfsout = new FSDataOutputStream(fos, null);
 	                /*---*/
 	            	
@@ -161,9 +165,11 @@ public class DumpReceiver implements Runnable {
 	                
 	                /*For Hadoop HDFS*/
 	                hdfsout.close();
-	                hdfs.close();
-	                /*---*/
 	                
+	                //Now that File has been written to HDFS, pass the FileSystem to the Hashcreator to calculate the hash
+	                this.myHashGen.AssignFileSystem(this.hdfs);
+	                /*---*/
+	 
 	                inStream.close();
 	                
 	                System.out.println("Transfer complete");
@@ -181,6 +187,23 @@ public class DumpReceiver implements Runnable {
 				}
 		}
 		//}
+	        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+        	System.out.println("+++++++++++++++++++++++++++ FILE HASHES ++++++++++++++++++++++++++++++");
+        	System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+	        
+        	System.out.println("MD5 hash: " + this.myHashGen.generateHash("MD5"));
+        	System.out.println("SHA1 hash: " + this.myHashGen.generateHash("SHA1"));
+        	
+        	/*For Hadoop HDFS*/
+        	try {
+				this.hdfs.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				System.out.println("Failed while trying to close HDFS ...");
+				e.printStackTrace();
+			}
+        	/*---*/
+        	     	
 	        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         	System.out.println("+++++++++++++++++++++++++++ RUN STATISTICS +++++++++++++++++++++++++++");
         	System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");

@@ -45,7 +45,7 @@ public class DumpFSHadoop {
 		//Initialize the FSDumper
 		DumpFSHadoop myFSDumper= new DumpFSHadoop();
 		myFSDumper.InitiateConnection("root", "", "192.168.1.150");				// <<<---- Chumby
-		myFSDumper.InitiateConnection("root", "admin", "192.168.0.104");		// <<<---- MT4GS
+		//myFSDumper.InitiateConnection("root", "admin", "192.168.0.104");		// <<<---- MT4GS
 		
 		myFSDumper.doPortForwardingL(54137, "127.0.0.1", 57314);
 		
@@ -53,9 +53,9 @@ public class DumpFSHadoop {
 		
 		//String CommandToExecute = "set|grep SSH";
 		//---->//
-		//String CommandToExecute = "dd if=/dev/mtdblock5 | gzip | nc -l -p 57314 -w 10";				//Chumby
+		String CommandToExecute = "dd if=/dev/mtdblock5 | gzip | nc -l -p 57314 -w 10";				//Chumby
 		//String CommandToExecute = "dd if=/dev/block/mmcblk0p22 | gzip | nc -l -p 57314 -w 10";	//MT4GS <<<---- /system
-		String CommandToExecute = "dd if=/dev/block/mmcblk0p24 | gzip | nc -l -p 57314 -w 10";	//MT4GS <<<---- /cache
+		//String CommandToExecute = "dd if=/dev/block/mmcblk0p24 | gzip | nc -l -p 57314 -w 10";	//MT4GS <<<---- /cache
 		//String CommandToExecute = "echo '1234567zxckhgjgh' | gzip | nc -l -p 57314 -w 10";		//Testing
 				
 		//myFSDumper.StartRemoteDD2Netcat(CommandToExecute);
