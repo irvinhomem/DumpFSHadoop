@@ -156,8 +156,12 @@ public class DumpReceiver implements Runnable {
 	                        if(byteCounter % 1000000 == 0){		
 	                        	System.out.print(".");
 	                        	if ((byteCounter/1000000) % 2 == 0){
-	                        		System.out.print((int)byteCounter/1000000);
+	                        		int my50Counter = (int)byteCounter/1000000;
+	                        		System.out.print(my50Counter);
 	                        		//System.out.print(bytesRead);
+	                        		if(my50Counter % 50 == 0){
+	                        			System.out.println("|");
+	                        		}
 	                        	}
 	                        }
 	                        
