@@ -17,9 +17,12 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.log4j.Logger;
 
 
 public class DumpReceiver implements Runnable {
+	
+	private static Logger logger = Logger.getLogger(DumpReceiver.class);
 	
 	private ServerSocket serverSock;
 	private Socket connectedSock;
@@ -75,7 +78,8 @@ public class DumpReceiver implements Runnable {
 			long startCopyTime = System.currentTimeMillis();
 			this.currStats.setFileTransStartTime(startCopyTime);
 			
-			byte[] aByte = new byte[1];
+			//byte[] aByte = new byte[1024];
+			byte[] aByteBuff = new byte[1024];
 	        int bytesRead;
 			
 	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -133,7 +137,7 @@ public class DumpReceiver implements Runnable {
 	                
 	                //System.out.println("Preparing to write");
 	                
-	                bytesRead = inStream.read(aByte, 0, aByte.length);
+	                //bytesRead = inStream.read(aByte, 0, aByte.length);
 	                System.out.println("Incoming Bytes available: " + inStream.available());
 	                System.out.println("Preparing to write " + inStream.available() + " bytes ...");
 
@@ -142,13 +146,52 @@ public class DumpReceiver implements Runnable {
 	                int stepCounterRound = 0;
 	                
 	                System.out.print("#");
+	                 
+	                try{
+	                	while(-1 != (bytesRead =  inStream.read(aByteBuff, 0, aByteBuff.length))){
+	                		hdfsout.write(aByteBuff, 0, bytesRead);
+	                		
+	                		//Some sort of feedback that stuff is happening
+	                        byteCounter++;
+
+	                        if(byteCounter % 1000 == 0){		
+	                        	System.out.print(".");
+	                        	if ((byteCounter/1000) % 2 == 0){
+	                        		int my50Counter = (int)byteCounter/1000;
+	                        		System.out.print(my50Counter);
+	                        		//System.out.print(bytesRead);
+	                        		if(my50Counter % 50 == 0){
+	                        			System.out.println("|");
+	                        		}
+	                        	}
+	                        }
+	                	}
+	                	
+	                }catch(IOException e){
+	                	logger.error("Error with streaming op: " +e.getMessage());
+	                	throw (e);
+	                	
+	                }finally{
+	                	try{
+	                		inStream.close();
+	                		/*For Hadoop HDFS*/
+	                		hdfsout.flush();
+	    	                hdfsout.close();
+	                		
+	                		
+	                	}catch(Exception e){
+	                		//Ignore
+	                		System.out.println("IO error with instream / outstream. Can be ignored.");
+	                	}
+	                }
+	                /*
 	                do {
 	                        baos.write(aByte);
 	                        bytesRead = inStream.read(aByte);
 	                        
-	                        /*For Hadoop HDFS*/
+	                        //---For Hadoop HDFS//
 	                        hdfsout.write(aByte, 0, aByte.length);
-	                        /*---*/
+	                        //------//
 	                        
 	                        //Some sort of feedback that stuff is happening
 	                        byteCounter++;
@@ -166,9 +209,11 @@ public class DumpReceiver implements Runnable {
 	                        }
 	                        
 	                } while (bytesRead != -1);
+	                */
+	                
 	                
 	                /*For Hadoop HDFS*/
-	                hdfsout.close();
+	                //hdfsout.close();
 	                
 	                //Now that File has been written to HDFS, pass the FileSystem to the Hashcreator to calculate the hash
 	                this.myHashGen.AssignFileSystem(this.hdfs);
