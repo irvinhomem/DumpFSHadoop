@@ -44,29 +44,43 @@ public class DumpFSHadoop {
 		
 		//Initialize the FSDumper
 		DumpFSHadoop myFSDumper= new DumpFSHadoop();
-		//myFSDumper.InitiateConnection("root", "", "192.168.1.150");				// <<<---- Chumby
-		myFSDumper.InitiateConnection("root", "admin", "192.168.0.101");		// <<<---- MT4GS
+		myFSDumper.InitiateConnection("root", "", "192.168.1.150");				// <<<---- Chumby
+		//myFSDumper.InitiateConnection("root", "admin", "192.168.0.105");		// <<<---- MT4GS
 		//myFSDumper.InitiateConnection("root", "admin", "192.168.1.182");		// <<<---- MT4GS
 		//myFSDumper.InitiateConnection("root", "admin", "192.168.1.110");		// <<<---- HTC Incredible S
+		//myFSDumper.InitiateConnection("root", "admin", "192.168.0.103");		// <<<---- HTC Incredible S
 		//myFSDumper.InitiateConnection("root", "admin", "192.168.1.116");		// <<<---- GalaxyTab 2
+		//myFSDumper.InitiateConnection("root", "admin", "192.168.0.103");		// <<<---- GalaxyTab 2
 		
 		myFSDumper.doPortForwardingL(54137, "127.0.0.1", 57314);
 		
 		//myFSDumper.StartLocalNetCat(54137);
 		//String CommandToExecute = "set|grep SSH";
 		//---->//
-		//String CommandToExecute = "dd if=/dev/mtdblock5 | gzip | nc -l -p 57314 -w 10";				//Chumby
+		String CommandToExecute = "dd if=/dev/mtdblock5 | gzip | nc -l -p 57314 -w 10";				//Chumby
+		//String CommandToExecute = "dd if=/dev/mtdblock1 | gzip | nc -l -p 57314 -w 10";				//Chumby
+		/**MT4GS**/
 		//String CommandToExecute = "dd if=/dev/block/mmcblk0p19 | gzip | nc -l -p 57314 -w 10";	//MT4GS <<<---- /vendor/firmware/adsp  (16MB)
 		//String CommandToExecute = "dd if=/dev/block/mmcblk0p24 | gzip | nc -l -p 57314 -w 10";	//MT4GS <<<---- /cache	(118.1MB)		
 		//String CommandToExecute = "dd if=/dev/block/mmcblk0p17 | gzip | nc -l -p 57314 -w 10";	//MT4GS <<<---- /vendor/firmware/misc	(199.8MB)
 		//String CommandToExecute = "dd if=/storage | gzip | nc -l -p 57314 -w 10";	//MT4GS <<<---- /storage <---Doesn't work
 		//String CommandToExecute = "dd if=/dev/block/mmcblk0p22 | gzip | nc -l -p 57314 -w 10";	//MT4GS <<<---- /system
 		//String CommandToExecute = "dd if=/dev/block/mmcblk0p23 | gzip | nc -l -p 57314 -w 10";	//MT4GS <<<---- /data	(1.1GB)
-		String CommandToExecute = "dd if=/dev/block/vold/179:65 | gzip | nc -l -p 57314 -w 10";	//MT4GS <<<---- /storage/sdcard0 (7.3GB)
+		//String CommandToExecute = "dd if=/dev/block/vold/179:65 | gzip | nc -l -p 57314 -w 10";		//MT4GS <<<---- /storage/sdcard0 (7.3GB)
+		/**Galaxy Tab**/
+		//String CommandToExecute = "dd if=/dev/block/platform/omap/omap_hsmmc.1/by-name/EFS | gzip | nc -l -p 57314 -w 10";	//GalaxyTab 2 <<<---- /efs (19MB)
+		//String CommandToExecute = "dd if=/dev/block/platform/omap/omap_hsmmc.1/by-name/CACHE | gzip | nc -l -p 57314 -w 10";	//GalaxyTab 2 <<<---- /cache (688MB)
 		//String CommandToExecute = "dd if=/dev/block/platform/omap/omap_hsmmc.1/by-name/DATAFS | gzip | nc -l -p 57314 -w 10";	//GalaxyTab 2 <<<---- /data (4GB)
-
+		//String CommandToExecute = "dd if=/dev/fuse | gzip | nc -l -p 57314 -w 10";	//GalaxyTab 2 <<<---- /storage/sdcard0 (4GB)
+		//String CommandToExecute = "dd if=/dev/block/vold/179:25 | gzip | nc -l -p 57314 -w 10";  //Galaxy Tab 2 <<<---- /storage/extSdCard
+		/**HTC Incredible S**/
 		//String CommandToExecute = "dd if=/dev/block/mmcblk0p26 | gzip | nc -l -p 57314 -w 10";	//HTC Incredible S <<<---- /data	(1GB)
-		
+		//String CommandToExecute = "dd if=/dev/block/mmcblk0p27 | gzip | nc -l -p 57314 -w 10";	//HTC Incredible S <<<---- /cache	(1GB)
+		//String CommandToExecute = "dd if=/dev/block/mmcblk0p29 | gzip | nc -l -p 57314 -w 10";	//HTC Incredible S <<<---- /system/lib	(1GB)
+		//String CommandToExecute = "dd if=/dev/block/mmcblk0p25 | gzip | nc -l -p 57314 -w 10";	//HTC Incredible S <<<---- /system	(1GB)
+		//String CommandToExecute = "dd if=/dev/block/vold/179:65 | gzip | nc -l -p 57314 -w 10";	//HTC Incredible S <<<---- /mnt/sdcard	(1GB)
+		//String CommandToExecute = "dd if=/dev/block/vold/179:64 | gzip | nc -l -p 57314 -w 10";	//HTC Incredible S <<<---- /mnt/sdcard	(1GB)
+		//
 		//String CommandToExecute = "echo '1234567zxckhgjgh' | gzip | nc -l -p 57314 -w 10";		//Testing
 				
 		//myFSDumper.StartRemoteDD2Netcat(CommandToExecute);
