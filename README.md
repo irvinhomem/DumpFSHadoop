@@ -4,7 +4,7 @@ DumpFSHadoop
 
 Introduction
 -------------
-This proof of concept Java application enables the dumping of Android partitions (or embedded Linux device partitions) over a network and onto a Hadoop HDFS cluster.
+This proof of concept Java application enables the dumping of Android partitions (or embedded Linux device partitions), compression and transfer over a network and onto a Hadoop HDFS cluster.
 
 
 Assumptions
@@ -13,6 +13,7 @@ Assumptions
 - That 'busybox' is installed on the Android device/embedded Linux device
 - That there is an SSH server on the device allowing the HDFS Storage node to initiate an SSH connection to the device
 - That the devices are on the same local network (Although the testing we did was over the Internet over a VPN connection)
+- That a HDFS cluster is in existence.
 
 
 Attribution
