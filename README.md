@@ -18,10 +18,10 @@ Assumptions
 Testing
 -------------
 Testing has been done using the following devices:
-Chumby (Legacy embedded Linux device)
-HTC MyTouch 4G Slide (MT4GS) - CyanogenMod
-HTC Incredible S - Android 2.3.3
-Samsung Galaxy Tab 2 - Android 4.0.3
+- Chumby (Legacy embedded Linux device)
+- HTC MyTouch 4G Slide (MT4GS) - CyanogenMod
+- HTC Incredible S - Android 2.3.3
+- Samsung Galaxy Tab 2 - Android 4.0.3
 
 
 Attribution
