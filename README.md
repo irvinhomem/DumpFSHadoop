@@ -14,6 +14,14 @@ Assumptions
 - That there is an SSH server on the device allowing the HDFS Storage node to initiate an SSH connection to the device
 - That the devices are on the same local network (Although the testing we did was over the Internet over a VPN connection)
 - That a HDFS cluster is in existence.
+- 
+Testing
+-------------
+Testing has been done using the following devices:
+Chumby (Legacy embedded Linux device)
+HTC MyTouch 4G Slide (MT4GS) - CyanogenMod
+HTC Incredible S - Android 2.3.3
+Samsung Galaxy Tab 2 - Android 4.0.3
 
 
 Attribution
