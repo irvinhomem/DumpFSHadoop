@@ -27,8 +27,8 @@ Testing has been done using the following devices:
 Attribution
 -------------
 This work was done by Irvin Homem as part of his Master's Thesis at KTH - THe Royal Insitute of Technology (Stockholm, Sweden)
-http://irvinhomem.com/pubs/IrvinHomem-MscThesis-LEIA.pdf
-http://kth.diva-portal.org/smash/record.jsf?pid=diva2%3A766909&dswid=-6661
+- http://irvinhomem.com/pubs/IrvinHomem-MscThesis-LEIA.pdf
+- http://kth.diva-portal.org/smash/record.jsf?pid=diva2%3A766909&dswid=-6661
 
 
 
