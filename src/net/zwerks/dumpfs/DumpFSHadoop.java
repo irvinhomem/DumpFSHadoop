@@ -19,6 +19,8 @@ public class DumpFSHadoop {
 	private String Host2Dump;
 	private Session openSession;
 	//private DumpFSStatistics myStatistics;
+	private int myLocalPort;
+	private int myRemotePort;
 	
 	public DumpFSHadoop() {
 		// TODO Auto-generated constructor stub
@@ -26,6 +28,8 @@ public class DumpFSHadoop {
 		//Print out OS that CBB is running from
 		System.out.println("------------------------------------");
 		System.out.println("CBB FileSystem Dumper running on: " + System.getProperty("os.name").toUpperCase() + "...");
+		this.myLocalPort = 48000; //54137 <<-- Was working with old setup
+		this.myRemotePort = 57314;
 	}
 
 	/**
@@ -44,21 +48,26 @@ public class DumpFSHadoop {
 		
 		//Initialize the FSDumper
 		DumpFSHadoop myFSDumper= new DumpFSHadoop();
-		myFSDumper.InitiateConnection("root", "", "192.168.1.150");				// <<<---- Chumby
+		//myFSDumper.InitiateConnection("root", "", "192.168.1.150");				// <<<---- Chumby
 		//myFSDumper.InitiateConnection("root", "admin", "192.168.0.105");		// <<<---- MT4GS
 		//myFSDumper.InitiateConnection("root", "admin", "192.168.1.182");		// <<<---- MT4GS
 		//myFSDumper.InitiateConnection("root", "admin", "192.168.1.110");		// <<<---- HTC Incredible S
 		//myFSDumper.InitiateConnection("root", "admin", "192.168.0.103");		// <<<---- HTC Incredible S
 		//myFSDumper.InitiateConnection("root", "admin", "192.168.1.116");		// <<<---- GalaxyTab 2
 		//myFSDumper.InitiateConnection("root", "admin", "192.168.0.103");		// <<<---- GalaxyTab 2
+		myFSDumper.InitiateConnection("root", "admin", "192.168.20.6");		// <<<---- Nexus 5
 		
-		myFSDumper.doPortForwardingL(54137, "127.0.0.1", 57314);
+		//myFSDumper.doPortForwardingL(54137, "127.0.0.1", 57314); //was working with old setup//
+		myFSDumper.doPortForwardingL(myFSDumper.getMyLocalPort(), "127.0.0.1", myFSDumper.getMyRemotePort());
 		
 		//myFSDumper.StartLocalNetCat(54137);
 		//String CommandToExecute = "set|grep SSH";
 		//---->//
-		String CommandToExecute = "dd if=/dev/mtdblock5 | gzip | nc -l -p 57314 -w 10";				//Chumby
+		//String CommandToExecute = "dd if=/dev/mtdblock5 | gzip | nc -l -p 57314 -w 10";				//Chumby
 		//String CommandToExecute = "dd if=/dev/mtdblock1 | gzip | nc -l -p 57314 -w 10";				//Chumby
+		/**Nexus 5**/
+		String CommandToExecute = "dd if=/dev/block/platform/msm_sdcc.1/by-name/modem | gzip | nc -l -p 57314 -w 10";		//Nexus 5 <<<---- /firmware (64MB)
+		
 		/**MT4GS**/
 		//String CommandToExecute = "dd if=/dev/block/mmcblk0p19 | gzip | nc -l -p 57314 -w 10";	//MT4GS <<<---- /vendor/firmware/adsp  (16MB)
 		//String CommandToExecute = "dd if=/dev/block/mmcblk0p24 | gzip | nc -l -p 57314 -w 10";	//MT4GS <<<---- /cache	(118.1MB)		
@@ -89,7 +98,7 @@ public class DumpFSHadoop {
 		dd2netcatThread.start();
 		//myDD2Netcat.send();
 				
-		myFSDumper.StartLocalNetCat(54137, myStatistics);
+		myFSDumper.StartLocalNetCat(myFSDumper.getMyLocalPort(), myStatistics);
 		
 		//String stopCommand = "killall nc";
 		//myFSDumper.StopRemoteNetcat(stopCommand);
@@ -211,6 +220,14 @@ public class DumpFSHadoop {
 		System.out.println(pathFormat);
 		
 		return pathFormat;
+	}
+	
+	public int getMyLocalPort(){
+		return this.myLocalPort;
+	}
+	
+	public int getMyRemotePort(){
+		return this.myRemotePort;
 	}
 }
 

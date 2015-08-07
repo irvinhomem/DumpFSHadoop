@@ -33,13 +33,14 @@ public class DumpReceiver implements Runnable {
     private DumpFSStatistics currStats;
     private HashCreator myHashGen;
     
-    private FileSystem hdfs;
+    private FileSystem hdfs;		//<<<<<--------------
 
 	public DumpReceiver(String FileDumpDir, String DumpFileName, int listenPort, DumpFSStatistics myStatsCollector){
 		// TODO Auto-generated constructor stub
 		//this.OutputPath = FileDumpDir;				//Directory where incoming file is to be dumped
 		this.outputFilename = DumpFileName;			//File name of incoming dump file
-		this.HDFSOutputPath = "/user/hadoop_user/IDA_ARCHIVE/";					//Hadoop HDFS Chosen Dump Directory
+		this.HDFSOutputPath = "/IDA_ARCHIVE/";					//Hadoop HDFS Chosen Dump Directory
+		//this.HDFSOutputPath = "/user/hadoop_user/IDA_ARCHIVE/";					//Hadoop HDFS Chosen Dump Directory
 		this.serverPort = listenPort;
 		this.connectedSock = null;
 		//this.inStream = null;
@@ -86,12 +87,17 @@ public class DumpReceiver implements Runnable {
 	        
 	        /*For Hadoop HDFS*/
 	        Configuration myHDFSConfig = new Configuration();
-	        
-	        myHDFSConfig.addResource("/HADOOP_HOME/conf/core-site.xml");
-	        myHDFSConfig.addResource("/HADOOP_HOME/conf/hdfs-site.xml");
-	        // Using the full path: "/usr/local/hadoop"
-	        //myHDFSConfig.addResource("/usr/local/hadoop/conf/core-site.xml");
-	        //myHDFSConfig.addResource("/usr/local/hadoop/conf/hdfs-site.xml");
+	        /**Hadoop 1.0.3**/
+	        //myHDFSConfig.addResource("/HADOOP_HOME/conf/core-site.xml");
+	        //myHDFSConfig.addResource("/HADOOP_HOME/conf/hdfs-site.xml");
+	        //// Using the full path: "/usr/local/hadoop"
+	        ////myHDFSConfig.addResource("/usr/local/hadoop/conf/core-site.xml");
+	        ////myHDFSConfig.addResource("/usr/local/hadoop/conf/hdfs-site.xml");
+	        /**Hadoop 2.7.0**/
+	        //myHDFSConfig.addResource("/HADOOP_HOME/etc/hadoop/core-site.xml");
+	        //myHDFSConfig.addResource("/HADOOP_HOME/etc/hadoop/hdfs-site.xml");
+	        myHDFSConfig.addResource("/usr/local/hadoop/etc/hadoop/core-site.xml");
+	        myHDFSConfig.addResource("/usr/local/hadoop/etc/hadoop/hdfs-site.xml");
 	        
 	        /*---*/
 	        
@@ -114,7 +120,13 @@ public class DumpReceiver implements Runnable {
 	            	
 	            	//For some strange reason "localhost" was not working, so i had to use the machine name
 	            	//hdfs = FileSystem.get(new URI("hdfs://localhost:54310"), myHDFSConfig);
-	            	this.hdfs = FileSystem.get(new URI("hdfs://cbb-node0:54310"), myHDFSConfig);
+	            	//System.out.println("HDFS URI (fs.defaultFS) = " + myHDFSConfig.get("fs.defaultFS")); //fs.default.name
+	            	System.out.println("HDFS URI = " + this.hdfs.getUri().toString());
+	            	
+	            	/**Was working with Old HDFS setup**/
+	            	//this.hdfs = FileSystem.get(new URI("hdfs://cbb-node0:54310"), myHDFSConfig);
+	            	/** **/
+	            	this.hdfs = FileSystem.get(new URI("hdfs://cbb-node0:9000"), myHDFSConfig);
 	            	
 	            	//FSDataOutputStream hdfsout = hdfs.create(new Path(this.HDFSOutputPath + this.outputFilename));
 	            	Path theHDFSOuputPath = new Path(this.HDFSOutputPath + this.outputFilename);
