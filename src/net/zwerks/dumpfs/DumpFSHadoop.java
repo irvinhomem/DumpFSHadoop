@@ -48,14 +48,16 @@ public class DumpFSHadoop {
 		
 		//Initialize the FSDumper
 		DumpFSHadoop myFSDumper= new DumpFSHadoop();
-		//myFSDumper.InitiateConnection("root", "", "192.168.1.150");				// <<<---- Chumby
-		//myFSDumper.InitiateConnection("root", "admin", "192.168.0.105");		// <<<---- MT4GS
-		//myFSDumper.InitiateConnection("root", "admin", "192.168.1.182");		// <<<---- MT4GS
-		//myFSDumper.InitiateConnection("root", "admin", "192.168.1.110");		// <<<---- HTC Incredible S
-		//myFSDumper.InitiateConnection("root", "admin", "192.168.0.103");		// <<<---- HTC Incredible S
-		//myFSDumper.InitiateConnection("root", "admin", "192.168.1.116");		// <<<---- GalaxyTab 2
-		//myFSDumper.InitiateConnection("root", "admin", "192.168.0.103");		// <<<---- GalaxyTab 2
-		myFSDumper.InitiateConnection("root", "admin", "192.168.20.6");		// <<<---- Nexus 5
+		//myFSDumper.InitiateConnection("root", "", "192.168.1.150", 22);				// <<<---- Chumby
+		//myFSDumper.InitiateConnection("root", "admin", "192.168.0.105", 22);		// <<<---- MT4GS
+		//myFSDumper.InitiateConnection("root", "admin", "192.168.1.182", 22);		// <<<---- MT4GS
+		//myFSDumper.InitiateConnection("root", "admin", "192.168.1.110", 22);		// <<<---- HTC Incredible S
+		//myFSDumper.InitiateConnection("root", "admin", "192.168.0.103", 22);		// <<<---- HTC Incredible S
+		//myFSDumper.InitiateConnection("root", "admin", "192.168.1.116", 22);		// <<<---- GalaxyTab 2
+		//myFSDumper.InitiateConnection("root", "admin", "192.168.0.103", 22);		// <<<---- GalaxyTab 2
+		//myFSDumper.InitiateConnection("root", "admin", "192.168.20.6", 22);		// <<<---- Nexus 5
+		myFSDumper.InitiateConnection("root", "admin", "192.168.20.10", 2222);		// <<<---- Galaxy S4-I9506 (SSHDroid App)
+		//myFSDumper.InitiateConnection("root", "qwe123", "192.168.20.10", 55925);		// <<<---- Galaxy S4-I9506 (SSH Server App)
 		
 		//myFSDumper.doPortForwardingL(54137, "127.0.0.1", 57314); //was working with old setup//
 		myFSDumper.doPortForwardingL(myFSDumper.getMyLocalPort(), "127.0.0.1", myFSDumper.getMyRemotePort());
@@ -66,8 +68,11 @@ public class DumpFSHadoop {
 		//String CommandToExecute = "dd if=/dev/mtdblock5 | gzip | nc -l -p 57314 -w 10";				//Chumby
 		//String CommandToExecute = "dd if=/dev/mtdblock1 | gzip | nc -l -p 57314 -w 10";				//Chumby
 		/**Nexus 5**/
-		String CommandToExecute = "dd if=/dev/block/platform/msm_sdcc.1/by-name/modem | gzip | nc -l -p 57314 -w 10";		//Nexus 5 <<<---- /firmware (64MB)
+		//String CommandToExecute = "dd if=/dev/block/platform/msm_sdcc.1/by-name/modem | gzip | nc -l -p 57314 -w 10";		//Nexus 5 <<<---- /firmware (64MB)
+		//String CommandToExecute = "dd if=/firmware | gzip | nc -l -p 57314 -w 10";		//Nexus 5 <<<---- /firmware (64MB) (*Failed /firmware is a directory)
 		
+		/**Galaxy S4-I9506**/
+		String CommandToExecute = "su root -c 'dd if=/dev/block/platform/msm_sdcc.1/by-name/modem | gzip | nc -l -p 57314 -w 10'";		//Nexus 5 <<<---- /firmware-modem (64MB)
 		/**MT4GS**/
 		//String CommandToExecute = "dd if=/dev/block/mmcblk0p19 | gzip | nc -l -p 57314 -w 10";	//MT4GS <<<---- /vendor/firmware/adsp  (16MB)
 		//String CommandToExecute = "dd if=/dev/block/mmcblk0p24 | gzip | nc -l -p 57314 -w 10";	//MT4GS <<<---- /cache	(118.1MB)		
@@ -104,7 +109,7 @@ public class DumpFSHadoop {
 		//myFSDumper.StopRemoteNetcat(stopCommand);
 	}
 	
-	public void InitiateConnection(String username, String secret, String hostname){
+	public void InitiateConnection(String username, String secret, String hostname, int mySSHPort){
 		try{
 			//Create new Java Secure Channel
 			JSch jsch=new JSch();
@@ -120,7 +125,7 @@ public class DumpFSHadoop {
 			this.UserOnHost2Dump = username;
 			
 			//Open an SSH Session using the above parameters
-			Session session = jsch.getSession(this.UserOnHost2Dump, this.Host2Dump, 22);
+			Session session = jsch.getSession(this.UserOnHost2Dump, this.Host2Dump, mySSHPort);
 			
 			session.setPassword(secret);
 			
