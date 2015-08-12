@@ -72,7 +72,15 @@ public class DumpFSHadoop {
 		//String CommandToExecute = "dd if=/firmware | gzip | nc -l -p 57314 -w 10";		//Nexus 5 <<<---- /firmware (64MB) (*Failed /firmware is a directory)
 		
 		/**Galaxy S4-I9506**/
-		String CommandToExecute = "su root -c 'dd if=/dev/block/platform/msm_sdcc.1/by-name/modem | gzip | nc -l -p 57314 -w 10'";		//Nexus 5 <<<---- /firmware-modem (64MB)
+		//String CommandToExecute = "su root -c 'dd if=/dev/block/platform/msm_sdcc.1/by-name/apnhlos | gzip | nc -l -p 57314 -w 10'";	//Galaxy S4-I9506 <<<---- /firmware (8.7MB)
+		//String CommandToExecute = "su root -c 'dd if=/dev/block/platform/msm_sdcc.1/by-name/modem | gzip | nc -l -p 57314 -w 10'";		//Galaxy S4-I9506 <<<---- /firmware-modem (64MB)
+		//String CommandToExecute = "su root -c 'dd if=/dev/block/mmcblk0p2 | gzip | nc -l -p 57314 -w 10'";		//Galaxy S4-I9506 <<<---- /firmware-modem (64MB) <--- Same as one above but different partition name
+		//String CommandToExecute = "su root -c 'dd if=/dev/block/platform/msm_sdcc.1/by-name/cache  | gzip | nc -l -p 57314 -w 10'";		//Galaxy S4-I9506 <<<---- /cache (350MB partition)
+		//String CommandToExecute = "su root -c 'dd if=/dev/block/mmcblk0p24 | gzip | nc -l -p 57314 -w 10'";		//Galaxy S4-I9506 <<<---- /efs (350MB Partition) <--- Same as one above but different partition name
+		//String CommandToExecute = "su root -c 'dd if=/data/15MB.img  | gzip | nc -l -p 57314 -w 10'";		//Galaxy S4-I9506 <<<---- /data
+		String CommandToExecute = "su root -c 'dd if=/data/250MB.img  | gzip | nc -l -p 57314 -w 10'";		//Galaxy S4-I9506 <<<---- /data
+		//String CommandToExecute = "su root -c 'dd if=/dev/block/vold/179:97  | gzip | nc -l -p 57314 -w 10'";		//Galaxy S4-I9506 <<<---- /storage/extSdCard (250MB used - 32GB SD card)
+		
 		/**MT4GS**/
 		//String CommandToExecute = "dd if=/dev/block/mmcblk0p19 | gzip | nc -l -p 57314 -w 10";	//MT4GS <<<---- /vendor/firmware/adsp  (16MB)
 		//String CommandToExecute = "dd if=/dev/block/mmcblk0p24 | gzip | nc -l -p 57314 -w 10";	//MT4GS <<<---- /cache	(118.1MB)		
