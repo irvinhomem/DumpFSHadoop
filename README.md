@@ -10,10 +10,10 @@ This application is part of the LEIA system.
 Assumptions
 -------------
 - The Android device is rooted, or one has some sort of privileged access in order to initiate the 'dd' command.
-- That 'busybox' is installed on the Android device/embedded Linux device
+- That 'busybox' is installed on the Android device/embedded Linux device ('busybox' contains 'dd' if the OS doesn't have it)
 - That there is an SSH server on the device allowing the HDFS Storage node to initiate an SSH connection to the device
 - That the devices are on the same local network (Although the testing we did was over the Internet over a VPN connection)
-- That a HDFS cluster is present.
+- That a HDFS cluster is present to store the incoming dumped 'dd' file
 
 Testing
 -------------
